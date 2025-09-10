@@ -1,0 +1,59 @@
+Started by user geeshan perera 
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in C:\ProgramData\Jenkins\.jenkins\workspace\SIT223-6.1P
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] echo
+Fetch the source code from the directory path specified by the environment variable
+[Pipeline] echo
+Directory: C:/projects/demo-app
+[Pipeline] echo
+Compile the code and generate any necessary artefacts
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] echo
+Unit tests
+[Pipeline] echo
+Integration tests
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Code Quality Check)
+[Pipeline] echo
+Check the quality of the code
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+[Pipeline] echo
+Deploy the application to a testing environment specified by the environment variable
+[Pipeline] echo
+Testing env: staging
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Approval)
+[Pipeline] echo
+Waiting 10 seconds to simulate manual approval...
+[Pipeline] sleep
+Sleeping for 10 sec
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy to Production)
+[Pipeline] echo
+Deploying the application to production environment: geeshan perera 
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
