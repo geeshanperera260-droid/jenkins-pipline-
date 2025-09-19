@@ -1,72 +1,53 @@
 pipeline {
   agent any
-  options { timestamps(); ansiColor('xterm') }
 
-  // Use the NodeJS plugin (Manage Jenkins → Tools → NodeJS installations → add "node-18")
-  tools { nodejs 'node-18' }
+  environment {
+    DIRECTORY_PATH        = 'C:/projects/demo-app' 
+    TESTING_ENVIRONMENT   = 'staging'
+    PRODUCTION_ENVIRONMENT= 'geeshan perera '
+  }
 
   stages {
-    stage('Checkout') {
+    stage('Build') {
       steps {
-        // If your job is "Pipeline from SCM", this works:
-        checkout scm
-        // Or explicitly: git branch: 'main', url: 'https://github.com/geeshanperera260-droid/jenkins-pipline-.git'
+        echo "Fetch the source code from the directory path specified by the environment variable"
+        echo "Directory: ${env.DIRECTORY_PATH}"
+        echo "Compile the code and generate any necessary artefacts"
       }
     }
-
-    stage('Verify Node & npm') {
+    stage('Test') {
       steps {
-        bat 'node -v'
-        bat 'npm -v'
+        echo "Unit tests"
+        echo "Integration tests"
       }
     }
-
-    stage('Install Dependencies') {
+    stage('Code Quality Check') {
       steps {
-        bat 'npm install'
+        echo "Check the quality of the code"
       }
     }
-
-    stage('Run Tests') {
+    stage('Deploy') {
       steps {
-        // Keep the build green even if tests fail (common for this assignment)
-        bat 'npm test || exit /b 0'
-      }
-      post {
-        always {
-          // JUnit results if your tests produce them (ok to leave; it will just be empty)
-          junit allowEmptyResults: true, testResults: '**/junit*.xml'
-        }
+        echo "Deploy the application to a testing environment specified by the environment variable"
+        echo "Testing env: ${env.TESTING_ENVIRONMENT}"
       }
     }
-
-    stage('Coverage (optional)') {
+    stage('Approval') {
       steps {
-        // Runs only if you added a "coverage" script in package.json; otherwise it won't fail the build
-        bat 'npm run coverage || exit /b 0'
-      }
-      post {
-        always {
-          // Publish lcov if you generate it (nyc produces coverage/lcov.info)
-          recordCoverage(tools: [[parser: 'LCOV', pattern: 'coverage/lcov.info']], sourceFileResolver: sourceFiles('STORE_LAST_BUILD'))
-        }
+        echo "Waiting 10 seconds to simulate manual approval..."
+        sleep time: 10, unit: 'SECONDS'
       }
     }
-
-    stage('NPM Audit (Security Scan)') {
+    stage('complete') {
       steps {
-        // Show CVEs but don’t fail the build
-        bat 'npm audit || exit /b 0'
-        // For a report file you can archive:
-        bat 'npm audit --json > npm-audit.json || exit /b 0'
-        archiveArtifacts artifacts: 'npm-audit.json', fingerprint: true, onlyIfSuccessful: false
+        echo "completed"
+        echo "Testing env: ${env.TESTING_ENVIRONMENT}"
+      }
+    }
+    stage('Deploy to Production') {
+      steps {
+        echo "Deploying the application to production environment: ${env.PRODUCTION_ENVIRONMENT}"
       }
     }
   }
-
-  post {
-    always {
-      echo "Build finished with: ${currentBuild.currentResult}"
-    }
-  }
-}
+}    this is my git hub jenskin file code 
