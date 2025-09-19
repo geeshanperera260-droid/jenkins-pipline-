@@ -1,46 +1,19 @@
 pipeline {
   agent any
-
-  environment {
-    DIRECTORY_PATH        = 'C:/projects/demo-app' 
-    TESTING_ENVIRONMENT   = 'staging'
-    PRODUCTION_ENVIRONMENT= 'geeshan perera '
-  }
+  options { timestamps(); ansiColor('xterm') }
+  environment { PATH = "C:\\Program Files\\nodejs;${env.PATH}" } // install Node for all users
 
   stages {
-    stage('Build') {
+    stage('Checkout') { steps { checkout scm } }
+    stage('Verify Node & npm') { steps { bat 'where node' ; bat 'node -v' ; bat 'npm -v' } }
+    stage('Install Dependencies') { steps { bat 'npm install' } }
+    stage('Run Tests') { steps { bat 'npm test || exit /b 0' } }
+    stage('Coverage (optional)'){ steps { bat 'npm run coverage || exit /b 0' } }
+    stage('NPM Audit') {
       steps {
-        echo "Fetch the source code from the directory path specified by the environment variable"
-        echo "Directory: ${env.DIRECTORY_PATH}"
-        echo "Compile the code and generate any necessary artefacts"
-      }
-    }
-    stage('Test') {
-      steps {
-        echo "Unit tests"
-        echo "Integration tests"
-      }
-    }
-    stage('Code Quality Check') {
-      steps {
-        echo "Check the quality of the code"
-      }
-    }
-    stage('Deploy') {
-      steps {
-        echo "Deploy the application to a testing environment specified by the environment variable"
-        echo "Testing env: ${env.TESTING_ENVIRONMENT}"
-      }
-    }
-    stage('Approval') {
-      steps {
-        echo "Waiting 10 seconds to simulate manual approval..."
-        sleep time: 10, unit: 'SECONDS'
-      }
-    }
-    stage('Deploy to Production') {
-      steps {
-        echo "Deploying the application to production environment: ${env.PRODUCTION_ENVIRONMENT}"
+        bat 'npm audit || exit /b 0'
+        bat 'npm audit --json > npm-audit.json || exit /b 0'
+        archiveArtifacts artifacts: 'npm-audit.json', fingerprint: true, onlyIfSuccessful: false
       }
     }
   }
