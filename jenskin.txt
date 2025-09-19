@@ -38,16 +38,10 @@ pipeline {
         sleep time: 10, unit: 'SECONDS'
       }
     }
-    stage('complete') {
-      steps {
-        echo "completed"
-        echo "Testing env: ${env.TESTING_ENVIRONMENT}"
-      }
-    }
     stage('Deploy to Production') {
       steps {
         echo "Deploying the application to production environment: ${env.PRODUCTION_ENVIRONMENT}"
       }
     }
   }
-}    this is my git hub jenskin file code 
+}
