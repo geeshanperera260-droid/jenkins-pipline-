@@ -1,26 +1,19 @@
 pipeline {
   agent any
   options { timestamps(); ansiColor('xterm') }
-  tools { nodejs 'node-18' }  // Manage Jenkins → Tools → NodeJS installations → name it node-18
+  environment { PATH = "C:\\Program Files\\nodejs;${env.PATH}" } // install Node for all users
 
   stages {
     stage('Checkout') { steps { checkout scm } }
-
-    stage('Verify Node & npm') {
-      steps { bat 'node -v' ; bat 'npm -v' }
-    }
-
+    stage('Verify Node & npm') { steps { bat 'where node' ; bat 'node -v' ; bat 'npm -v' } }
     stage('Install Dependencies') { steps { bat 'npm install' } }
-
     stage('Run Tests') { steps { bat 'npm test || exit /b 0' } }
-
-    stage('Coverage (optional)') { steps { bat 'npm run coverage || exit /b 0' } }
-
-    stage('NPM Audit (Security Scan)') {
+    stage('Coverage (optional)'){ steps { bat 'npm run coverage || exit /b 0' } }
+    stage('NPM Audit') {
       steps {
         bat 'npm audit || exit /b 0'
         bat 'npm audit --json > npm-audit.json || exit /b 0'
-        archiveArtifacts artifacts: 'npm-audit.json', onlyIfSuccessful: false, fingerprint: true
+        archiveArtifacts artifacts: 'npm-audit.json', fingerprint: true, onlyIfSuccessful: false
       }
     }
   }
